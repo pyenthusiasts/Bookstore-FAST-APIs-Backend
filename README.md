@@ -22,7 +22,7 @@ The Bookstore API provides a secure and scalable backend service for managing bo
 
 - **JWT Authentication**: Secure API endpoints with JSON Web Tokens for authentication.
 - **CRUD Operations**: Full Create, Read, Update, Delete operations for books and authors.
-- **Database Integration**: Persistent storage using SQLite with SQLAlchemy ORM.
+- **Database Integration**: Persistent storage using **SQLite** with SQLAlchemy ORM.
 - **Async Endpoints**: Asynchronous endpoints for improved performance.
 - **Pagination**: Efficient handling of large datasets with pagination.
 - **Error Handling**: Graceful error handling with meaningful HTTP status codes and messages.
