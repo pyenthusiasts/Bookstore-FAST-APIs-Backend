@@ -1,17 +1,26 @@
+# main.py
+
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import List
 from datetime import timedelta
 
-from database import engine, get_db
+from database import engine, get_db, SessionLocal
 from models import Base
 from schemas import UserCreate, UserResponse, BookCreate, BookResponse, AuthorCreate, AuthorResponse, Token
-from crud import create_user, create_book, create_author, get_books, get_authors
+from crud import create_user, create_book, create_author, get_books, get_authors, get_user
 from auth import create_access_token, get_current_user
+from seed_data import seed_data
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
+
+# Seed the database with fake data if empty
+db = SessionLocal()
+if db.query(User).count() == 0:  # Seed only if the database is empty
+    seed_data(db)
+db.close()
 
 app = FastAPI()
 
