@@ -217,4 +217,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Thank you for using the Bookstore API Backend with FastAPI! If you have any questions or feedback, feel free to reach out. Happy coding! 📚🚀
+Thank you for using the Bookstore API Backend with FastAPI! If you have any questions or feedback, feel free to reach out to [me]. Happy coding! 📚🚀
