@@ -1,0 +1,8 @@
+fastapi==0.95.2
+uvicorn==0.23.1
+sqlalchemy==2.0.21
+databases==0.6.1
+pydantic[email]==2.4.2
+passlib[bcrypt]==1.7.4
+python-jose==3.3.0
+Faker==18.10.0
