@@ -1,6 +1,6 @@
 # Bookstore API Backend with FastAPI
 
-This project demonstrates a sophisticated backend API for a **Bookstore** application, built using **FastAPI**, a modern, fast (high-performance) web framework for building APIs with Python. The API provides features for managing books and authors, including full CRUD operations, JWT-based authentication, database integration using SQLAlchemy, and pagination.
+This project demonstrates a sophisticated backend API for a **Bookstore** application, built using **FastAPI**, a modern, fast (high-performance) web framework for building APIs with Python. The API provides features for managing books and authors, including full CRUD operations, JWT-based authentication, database integration using SQLAlchemy, and pagination. It also includes automated seeding of the database with fake data for testing purposes.
 
 ## Table of Contents
 
@@ -27,6 +27,7 @@ The Bookstore API provides a secure and scalable backend service for managing bo
 - **Pagination**: Efficient handling of large datasets with pagination.
 - **Error Handling**: Graceful error handling with meaningful HTTP status codes and messages.
 - **Modular Structure**: Organized codebase with multiple files for scalability and maintainability.
+- **Automated Database Seeding**: Use of Faker library to generate and seed the database with fake data.
 
 ## Installation
 
@@ -57,7 +58,7 @@ The Bookstore API provides a secure and scalable backend service for managing bo
    Install the required packages using pip:
 
    ```bash
-   pip install fastapi uvicorn sqlalchemy databases pydantic[email] passlib python-jose
+   pip install -r requirements.txt
    ```
 
 ## Usage
@@ -91,6 +92,7 @@ bookstore/
 ├── auth.py                # Authentication logic (JWT token creation and verification)
 ├── database.py            # Database setup and session management
 ├── config.py              # Configuration settings (e.g., secrets, JWT settings)
+├── seed_data.py           # Script for seeding the database with fake data
 └── requirements.txt       # List of required Python packages
 ```
 
