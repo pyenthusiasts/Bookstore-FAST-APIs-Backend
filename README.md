@@ -1,6 +1,6 @@
 # Bookstore API Backend with FastAPI
 
-This project demonstrates a sophisticated backend API for a **Bookstore** application, built using **FastAPI**, a modern, fast (high-performance) web framework for building APIs with Python. The API provides features for managing books and authors, including full CRUD operations, JWT-based authentication, database integration using SQLAlchemy, and pagination. It also includes automated seeding of the database with fake data for testing purposes.
+This project demonstrates a simple but comprehensive backend API for a **Bookstore** application, built using **FastAPI**, a modern, fast (high-performance) web framework for building APIs with Python. The API provides features for managing books and authors, including full CRUD operations, JWT-based authentication, database integration using SQLAlchemy, and pagination. It also includes automated seeding of the database with fake data for testing purposes.
 
 ## Table of Contents
 
