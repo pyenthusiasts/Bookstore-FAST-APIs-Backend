@@ -1,20 +1,23 @@
 """
 Author management endpoints.
 """
+
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.api.dependencies import get_db, get_current_active_user
+
+from app.api.dependencies import get_current_active_user, get_db
+from app.core.logging_config import get_logger
 from app.crud.author import (
+    create_author,
+    delete_author,
     get_author_by_id,
     get_authors,
-    create_author,
     update_author,
-    delete_author,
 )
-from app.schemas.author import AuthorCreate, AuthorUpdate, AuthorResponse, AuthorWithBooks
 from app.models.user import User
-from app.core.logging_config import get_logger
+from app.schemas.author import AuthorCreate, AuthorResponse, AuthorUpdate, AuthorWithBooks
 
 logger = get_logger(__name__)
 

@@ -1,13 +1,14 @@
 """
 API dependencies for authentication and database access.
 """
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from jose import JWTError
-from app.db.database import get_db
+
 from app.core.security import decode_access_token
 from app.crud.user import get_user_by_username
+from app.db.database import get_db
 from app.models.user import User
 from app.schemas.token import TokenData
 

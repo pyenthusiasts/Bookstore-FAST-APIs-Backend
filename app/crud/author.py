@@ -1,8 +1,11 @@
 """
 CRUD operations for authors.
 """
+
 from typing import Optional
+
 from sqlalchemy.orm import Session
+
 from app.models.author import Author
 from app.schemas.author import AuthorCreate, AuthorUpdate
 

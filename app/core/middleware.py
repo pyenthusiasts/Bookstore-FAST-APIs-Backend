@@ -1,14 +1,15 @@
 """
 Custom middleware for security, rate limiting, and request tracking.
 """
+
 import time
 import uuid
 from typing import Callable
+
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from starlette.datastructures import Headers
+
 from app.core.logging_config import get_logger
 
 logger = get_logger(__name__)

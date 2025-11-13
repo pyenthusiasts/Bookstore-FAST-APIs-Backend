@@ -1,22 +1,25 @@
 """
 Book management endpoints.
 """
+
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
-from app.api.dependencies import get_db, get_current_active_user
+
+from app.api.dependencies import get_current_active_user, get_db
+from app.core.logging_config import get_logger
+from app.crud.author import get_author_by_id
 from app.crud.book import (
+    create_book,
+    delete_book,
     get_book_by_id,
     get_books,
     get_books_by_author,
-    create_book,
     update_book,
-    delete_book,
 )
-from app.crud.author import get_author_by_id
-from app.schemas.book import BookCreate, BookUpdate, BookResponse, BookWithAuthor
 from app.models.user import User
-from app.core.logging_config import get_logger
+from app.schemas.book import BookCreate, BookResponse, BookUpdate, BookWithAuthor
 
 logger = get_logger(__name__)
 

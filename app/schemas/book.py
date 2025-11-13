@@ -1,8 +1,13 @@
 """
 Book schemas for request/response validation.
 """
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+
+from typing import TYPE_CHECKING, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+if TYPE_CHECKING:
+    from app.schemas.author import AuthorResponse
 
 
 class BookBase(BaseModel):
@@ -41,10 +46,3 @@ class BookWithAuthor(BookResponse):
     author: "AuthorResponse"
 
     model_config = ConfigDict(from_attributes=True)
-
-
-# Import for forward reference
-from app.schemas.author import AuthorResponse
-
-# Update forward references
-BookWithAuthor.model_rebuild()

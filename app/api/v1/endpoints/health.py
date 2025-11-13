@@ -1,11 +1,14 @@
 """
 Health check endpoints for monitoring and orchestration.
 """
+
 import time
 from datetime import datetime
+
 from fastapi import APIRouter, Depends, status
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+
 from app.api.dependencies import get_db
 from app.core.config import settings
 from app.core.logging_config import get_logger

@@ -1,17 +1,20 @@
 """
 Authentication endpoints.
 """
+
 from datetime import timedelta
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
 from app.api.dependencies import get_db
 from app.core.config import settings
+from app.core.logging_config import get_logger
 from app.core.security import create_access_token
 from app.crud.user import authenticate_user, create_user, get_user_by_username
-from app.schemas.user import UserCreate, UserResponse
 from app.schemas.token import Token
-from app.core.logging_config import get_logger
+from app.schemas.user import UserCreate, UserResponse
 
 logger = get_logger(__name__)
 

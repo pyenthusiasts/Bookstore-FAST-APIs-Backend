@@ -1,8 +1,10 @@
 """
 API v1 router.
 """
+
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, users, authors, books
+
+from app.api.v1.endpoints import auth, authors, books, users
 
 api_router = APIRouter()
 

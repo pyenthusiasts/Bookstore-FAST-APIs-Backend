@@ -1,7 +1,7 @@
 """
 Authentication tests.
 """
-import pytest
+
 from fastapi import status
 
 
@@ -31,10 +31,7 @@ def test_login_success(client, test_user_data):
     # Login
     response = client.post(
         "/api/v1/auth/token",
-        data={
-            "username": test_user_data["username"],
-            "password": test_user_data["password"]
-        }
+        data={"username": test_user_data["username"], "password": test_user_data["password"]},
     )
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
@@ -46,10 +43,7 @@ def test_login_invalid_credentials(client, test_user_data):
     """Test login with invalid credentials."""
     response = client.post(
         "/api/v1/auth/token",
-        data={
-            "username": test_user_data["username"],
-            "password": "wrongpassword"
-        }
+        data={"username": test_user_data["username"], "password": "wrongpassword"},
     )
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -60,18 +54,12 @@ def test_get_current_user(client, test_user_data):
     client.post("/api/v1/auth/register", json=test_user_data)
     login_response = client.post(
         "/api/v1/auth/token",
-        data={
-            "username": test_user_data["username"],
-            "password": test_user_data["password"]
-        }
+        data={"username": test_user_data["username"], "password": test_user_data["password"]},
     )
     token = login_response.json()["access_token"]
 
     # Get current user
-    response = client.get(
-        "/api/v1/users/me",
-        headers={"Authorization": f"Bearer {token}"}
-    )
+    response = client.get("/api/v1/users/me", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert data["username"] == test_user_data["username"]

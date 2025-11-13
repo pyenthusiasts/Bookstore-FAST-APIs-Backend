@@ -1,11 +1,13 @@
 """
 Script to seed the database with sample data.
 """
+
 from faker import Faker
-from app.db.database import SessionLocal
-from app.models import User, Author, Book
+
+from app.core.logging_config import get_logger, setup_logging
 from app.core.security import get_password_hash
-from app.core.logging_config import setup_logging, get_logger
+from app.db.database import SessionLocal
+from app.models import Author, Book, User
 
 setup_logging()
 logger = get_logger(__name__)

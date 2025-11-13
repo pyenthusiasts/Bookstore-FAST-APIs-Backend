@@ -1,21 +1,23 @@
 """
 Main FastAPI application entry point.
 """
+
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from app.core.config import settings
-from app.core.logging_config import setup_logging, get_logger
-from app.core.middleware import (
-    SecurityHeadersMiddleware,
-    RequestIDMiddleware,
-    LoggingMiddleware,
-    RateLimitMiddleware,
-)
+
 from app.api.v1 import api_router
 from app.api.v1.endpoints import health
+from app.core.config import settings
+from app.core.logging_config import get_logger, setup_logging
+from app.core.middleware import (
+    LoggingMiddleware,
+    RateLimitMiddleware,
+    RequestIDMiddleware,
+    SecurityHeadersMiddleware,
+)
 from app.db.database import engine
 from app.models import Base
 
@@ -84,6 +86,7 @@ app.include_router(health.router, prefix="/api/v1", tags=["Health"])
 # Metrics endpoint (optional - requires prometheus-client)
 try:
     from app.api.v1.endpoints import metrics
+
     app.include_router(metrics.router, tags=["Monitoring"])
 except ImportError:
     logger.warning("Metrics endpoint not available (prometheus-client not installed)")

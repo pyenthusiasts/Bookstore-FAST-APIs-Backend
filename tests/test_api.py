@@ -1,7 +1,7 @@
 """
 Basic API tests.
 """
-import pytest
+
 from fastapi import status
 
 
