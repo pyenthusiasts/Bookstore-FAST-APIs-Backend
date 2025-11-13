@@ -81,6 +81,13 @@ app.add_middleware(
 app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 app.include_router(health.router, prefix="/api/v1", tags=["Health"])
 
+# Metrics endpoint (optional - requires prometheus-client)
+try:
+    from app.api.v1.endpoints import metrics
+    app.include_router(metrics.router, tags=["Monitoring"])
+except ImportError:
+    logger.warning("Metrics endpoint not available (prometheus-client not installed)")
+
 
 @app.get("/", tags=["Root"])
 def root():
