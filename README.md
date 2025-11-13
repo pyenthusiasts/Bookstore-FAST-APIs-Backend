@@ -4,18 +4,43 @@ A modern, production-ready RESTful API for managing a bookstore, built with Fast
 
 ## Features
 
+### Core Functionality
 - **Modern Stack**: Built with FastAPI, SQLAlchemy 2.0, and Pydantic v2
 - **JWT Authentication**: Secure endpoints with JSON Web Tokens
 - **Complete CRUD**: Full Create, Read, Update, Delete operations for books, authors, and users
 - **RESTful Design**: Clean API design following REST principles
 - **Database Migrations**: Alembic integration for database version control
-- **Testing**: Comprehensive test suite with pytest
-- **Docker Support**: Containerized application with Docker and docker-compose
-- **Code Quality**: Pre-commit hooks, Black, and Ruff for code formatting and linting
 - **API Documentation**: Auto-generated interactive docs with Swagger UI and ReDoc
-- **Logging**: Structured logging for better debugging and monitoring
-- **CORS Support**: Configurable CORS middleware
-- **Environment Configuration**: Settings management with pydantic-settings
+
+### Production-Ready Features
+- **Security**:
+  - Security headers middleware (XSS, CSRF, CSP protection)
+  - Rate limiting (per-IP throttling)
+  - Request ID tracking for distributed tracing
+  - Password hashing with bcrypt
+  - CORS configuration
+- **Monitoring & Observability**:
+  - Prometheus metrics endpoint
+  - Comprehensive health checks (liveness, readiness, detailed)
+  - Structured logging with request tracking
+  - Performance metrics (request duration, in-flight requests)
+- **High Availability**:
+  - Kubernetes deployment manifests
+  - Horizontal Pod Autoscaling (HPA)
+  - Multi-replica deployment support
+  - Graceful shutdown handling
+- **DevOps**:
+  - GitHub Actions CI/CD pipeline
+  - Docker multi-stage builds for production
+  - Nginx reverse proxy configuration
+  - Database backup and restore scripts
+  - Environment-based configuration (dev/staging/prod)
+
+### Development Experience
+- **Testing**: Comprehensive test suite with pytest and coverage
+- **Code Quality**: Pre-commit hooks, Black, and Ruff for formatting and linting
+- **Docker Support**: Containerized application with Docker and docker-compose
+- **Development Tools**: Makefile for common tasks, hot-reload, debugging support
 
 ## Quick Start
 
@@ -306,6 +331,33 @@ When you seed the database, the following test users are created:
 - Username: `user1` / Password: `password123`
 - Username: `user2` / Password: `password123`
 - Username: `user3` / Password: `password123`
+
+## Production Deployment
+
+For production deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+Quick production setup:
+
+```bash
+# Using Docker
+docker-compose -f docker-compose.prod.yml up -d
+
+# Or using Kubernetes
+kubectl apply -f k8s/
+```
+
+### Production Features
+
+- **Security**: Rate limiting, security headers, HTTPS ready
+- **Monitoring**: Prometheus metrics at `/metrics`
+- **Health Checks**:
+  - `/health` - Basic health
+  - `/api/v1/health/live` - Liveness probe
+  - `/api/v1/health/ready` - Readiness probe (with DB check)
+  - `/api/v1/health/detailed` - Comprehensive health info
+- **CI/CD**: Automated testing and deployment with GitHub Actions
+- **Scalability**: Kubernetes HPA for auto-scaling based on CPU/memory
+- **Backup**: Automated database backup scripts
 
 ## Contributing
 

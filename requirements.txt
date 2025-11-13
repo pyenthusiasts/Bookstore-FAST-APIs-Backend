@@ -7,19 +7,34 @@ pydantic-settings==2.6.0
 # Database
 sqlalchemy==2.0.36
 alembic==1.14.0
+psycopg2-binary==2.9.10
 
 # Security
 passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
 python-multipart==0.0.12
 
+# Monitoring
+prometheus-client==0.21.0
+sentry-sdk[fastapi]==2.17.0
+
+# Caching & Performance
+redis==5.2.0
+uvloop==0.21.0
+httptools==0.6.4
+
 # Utilities
 Faker==33.1.0
 python-dotenv==1.0.1
+requests==2.32.3
+
+# Database drivers
+aiosqlite==0.20.0
 
 # Development
 pytest==8.3.3
 pytest-asyncio==0.24.0
+pytest-cov==6.0.0
 httpx==0.27.2
 black==24.10.0
 ruff==0.8.2

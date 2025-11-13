@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookstore-api
+  labels:
+    app: bookstore-api
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: bookstore-api
+  template:
+    metadata:
+      labels:
+        app: bookstore-api
+        version: v1
+    spec:
+      containers:
+      - name: api
+        image: your-registry/bookstore-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        env:
+        - name: APP_NAME
+          value: "Bookstore API"
+        - name: DEBUG
+          value: "False"
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bookstore-secrets
+              key: secret-key
+        - name: SQLALCHEMY_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: bookstore-secrets
+              key: database-url
+        - name: LOG_LEVEL
+          value: "INFO"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health/live
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/health/ready
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookstore-api-service
+  labels:
+    app: bookstore-api
+spec:
+  type: ClusterIP
+  selector:
+    app: bookstore-api
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  sessionAffinity: None

@@ -1,30 +1,74 @@
 """
 Main FastAPI application entry point.
 """
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from app.core.config import settings
-from app.core.logging_config import setup_logging
+from app.core.logging_config import setup_logging, get_logger
+from app.core.middleware import (
+    SecurityHeadersMiddleware,
+    RequestIDMiddleware,
+    LoggingMiddleware,
+    RateLimitMiddleware,
+)
 from app.api.v1 import api_router
+from app.api.v1.endpoints import health
 from app.db.database import engine
 from app.models import Base
 
 # Setup logging
 setup_logging()
+logger = get_logger(__name__)
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifecycle manager for startup and shutdown events.
+    """
+    # Startup
+    logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}")
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables created/verified")
+    yield
+    # Shutdown
+    logger.info("Shutting down application")
+
 
 # Create FastAPI application
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="A modern bookstore API built with FastAPI",
+    description="A modern, production-ready bookstore API built with FastAPI",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
-# Configure CORS
+# Add middleware (order matters - first added is outermost)
+# Security headers
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Request ID tracking
+app.add_middleware(RequestIDMiddleware)
+
+# Logging
+app.add_middleware(LoggingMiddleware)
+
+# Rate limiting
+if not settings.DEBUG:
+    app.add_middleware(RateLimitMiddleware, calls=100, period=60)
+
+# GZIP compression
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# Trusted host (uncomment and configure in production)
+# app.add_middleware(TrustedHostMiddleware, allowed_hosts=["yourdomain.com", "*.yourdomain.com"])
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
@@ -33,8 +77,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API router
+# Include routers
 app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+app.include_router(health.router, prefix="/api/v1", tags=["Health"])
 
 
 @app.get("/", tags=["Root"])
