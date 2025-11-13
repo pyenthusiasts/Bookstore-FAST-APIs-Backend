@@ -1,220 +1,332 @@
 # Bookstore API Backend with FastAPI
 
-This project demonstrates a simple but comprehensive backend API for a **Bookstore** application, built using **FastAPI**, a modern, fast (high-performance) web framework for building APIs with Python. The API provides features for managing books and authors, including full CRUD operations, JWT-based authentication, database integration using SQLAlchemy, and pagination. It also includes automated seeding of the database with fake data for testing purposes.
-
-## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Features](#features)
-3. [Installation](#installation)
-4. [Usage](#usage)
-5. [Project Structure](#project-structure)
-6. [API Endpoints](#api-endpoints)
-7. [Examples](#examples)
-8. [Contributing](#contributing)
-9. [License](#license)
-
-## Introduction
-
-The Bookstore API provides a secure and scalable backend service for managing books and authors in a bookstore. It demonstrates key backend development concepts using FastAPI, such as asynchronous endpoints, JWT authentication, and database integration with SQLAlchemy. The API is designed to be easily extended and deployed, making it a great starting point for more complex applications.
+A modern, production-ready RESTful API for managing a bookstore, built with FastAPI. This project demonstrates best practices in API development, including proper project structure, authentication, testing, and containerization.
 
 ## Features
 
-- **JWT Authentication**: Secure API endpoints with JSON Web Tokens for authentication.
-- **CRUD Operations**: Full Create, Read, Update, Delete operations for books and authors.
-- **Database Integration**: Persistent storage using **SQLite** with SQLAlchemy ORM.
-- **Async Endpoints**: Asynchronous endpoints for improved performance.
-- **Pagination**: Efficient handling of large datasets with pagination.
-- **Error Handling**: Graceful error handling with meaningful HTTP status codes and messages.
-- **Modular Structure**: Organized codebase with multiple files for scalability and maintainability.
-- **Automated Database Seeding**: Use of Faker library to generate and seed the database with fake data.
+- **Modern Stack**: Built with FastAPI, SQLAlchemy 2.0, and Pydantic v2
+- **JWT Authentication**: Secure endpoints with JSON Web Tokens
+- **Complete CRUD**: Full Create, Read, Update, Delete operations for books, authors, and users
+- **RESTful Design**: Clean API design following REST principles
+- **Database Migrations**: Alembic integration for database version control
+- **Testing**: Comprehensive test suite with pytest
+- **Docker Support**: Containerized application with Docker and docker-compose
+- **Code Quality**: Pre-commit hooks, Black, and Ruff for code formatting and linting
+- **API Documentation**: Auto-generated interactive docs with Swagger UI and ReDoc
+- **Logging**: Structured logging for better debugging and monitoring
+- **CORS Support**: Configurable CORS middleware
+- **Environment Configuration**: Settings management with pydantic-settings
 
-## Installation
+## Quick Start
 
-### Prerequisites
+### Using Docker (Recommended)
 
-- Python 3.7 or higher
+```bash
+# Clone the repository
+git clone https://github.com/pyenthusiasts/Bookstore-FAST-APIs-Backend.git
+cd Bookstore-FAST-APIs-Backend
 
-### Install Required Packages
+# Start the application
+docker-compose up -d
 
-1. **Clone the Repository**:
+# Seed the database (optional)
+docker-compose exec api python scripts/seed_database.py
 
-   Clone the repository to your local machine:
+# Access the API at http://localhost:8000
+# API Documentation: http://localhost:8000/docs
+```
 
-   ```bash
-   git clone https://github.com/your-username/bookstore-api-fastapi.git
-   ```
+### Local Development
 
-2. **Navigate to the Directory**:
+```bash
+# Clone the repository
+git clone https://github.com/pyenthusiasts/Bookstore-FAST-APIs-Backend.git
+cd Bookstore-FAST-APIs-Backend
 
-   Go to the project directory:
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-   ```bash
-   cd bookstore-api-fastapi
-   ```
+# Install dependencies
+pip install -r requirements.txt
 
-3. **Install Dependencies**:
+# Copy environment file
+cp .env.example .env
 
-   Install the required packages using pip:
+# Run migrations
+alembic upgrade head
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+# Seed the database (optional)
+python scripts/seed_database.py
 
-## Usage
+# Run the application
+uvicorn app.main:app --reload
 
-1. **Run the Application**:
-
-   Start the FastAPI application using Uvicorn:
-
-   ```bash
-   uvicorn main:app --reload
-   ```
-
-   The server will start at `http://127.0.0.1:8000/`.
-
-2. **Access API Documentation**:
-
-   FastAPI provides interactive API documentation at:
-
-   - **Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-   - **ReDoc**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+# Or use Make
+make run
+```
 
 ## Project Structure
 
 ```
-bookstore/
+Bookstore-FAST-APIs-Backend/
 │
-├── main.py                # Entry point of the application
-├── models.py              # SQLAlchemy models representing the database schema
-├── schemas.py             # Pydantic models for request and response validation
-├── crud.py                # CRUD operations for interacting with the database
-├── auth.py                # Authentication logic (JWT token creation and verification)
-├── database.py            # Database setup and session management
-├── config.py              # Configuration settings (e.g., secrets, JWT settings)
-├── seed_data.py           # Script for seeding the database with fake data
-└── requirements.txt       # List of required Python packages
+├── app/                          # Application package
+│   ├── api/                      # API layer
+│   │   ├── v1/                   # API version 1
+│   │   │   ├── endpoints/        # API endpoints
+│   │   │   │   ├── auth.py       # Authentication endpoints
+│   │   │   │   ├── users.py      # User management endpoints
+│   │   │   │   ├── authors.py    # Author endpoints
+│   │   │   │   └── books.py      # Book endpoints
+│   │   │   └── __init__.py       # API router configuration
+│   │   └── dependencies.py       # Shared dependencies
+│   │
+│   ├── core/                     # Core functionality
+│   │   ├── config.py             # Configuration settings
+│   │   ├── security.py           # Security utilities
+│   │   └── logging_config.py     # Logging configuration
+│   │
+│   ├── crud/                     # Database operations
+│   │   ├── user.py               # User CRUD operations
+│   │   ├── author.py             # Author CRUD operations
+│   │   └── book.py               # Book CRUD operations
+│   │
+│   ├── db/                       # Database layer
+│   │   └── database.py           # Database configuration
+│   │
+│   ├── models/                   # SQLAlchemy models
+│   │   ├── user.py               # User model
+│   │   ├── author.py             # Author model
+│   │   └── book.py               # Book model
+│   │
+│   ├── schemas/                  # Pydantic schemas
+│   │   ├── user.py               # User schemas
+│   │   ├── author.py             # Author schemas
+│   │   ├── book.py               # Book schemas
+│   │   └── token.py              # Token schemas
+│   │
+│   └── main.py                   # Application entry point
+│
+├── alembic/                      # Database migrations
+│   ├── versions/                 # Migration scripts
+│   └── env.py                    # Alembic configuration
+│
+├── scripts/                      # Utility scripts
+│   └── seed_database.py          # Database seeding script
+│
+├── tests/                        # Test suite
+│   ├── conftest.py               # Test configuration
+│   ├── test_api.py               # API tests
+│   └── test_auth.py              # Authentication tests
+│
+├── .env.example                  # Example environment variables
+├── .gitignore                    # Git ignore rules
+├── .pre-commit-config.yaml       # Pre-commit hooks configuration
+├── alembic.ini                   # Alembic configuration
+├── docker-compose.yml            # Docker Compose configuration
+├── Dockerfile                    # Docker image definition
+├── Makefile                      # Development commands
+├── pyproject.toml                # Python project configuration
+├── pytest.ini                    # Pytest configuration
+├── requirements.txt              # Python dependencies
+└── README.md                     # This file
 ```
 
 ## API Endpoints
 
-### 1. User Registration
+All API endpoints are prefixed with `/api/v1`.
 
-- **Endpoint**: `POST /users/`
-- **Description**: Register a new user.
-- **Request Body**:
-  ```json
-  {
-    "username": "user1",
-    "password": "yourpassword"
-  }
-  ```
-- **Response**: User details (excluding password).
+### Authentication
 
-### 2. User Authentication
+- `POST /api/v1/auth/register` - Register a new user
+- `POST /api/v1/auth/token` - Login and get access token
 
-- **Endpoint**: `POST /token`
-- **Description**: Authenticate user and receive a JWT token.
-- **Request Body**: Form data (`username`, `password`).
-- **Response**: JWT token.
+### Users
 
-### 3. Create a New Book
+- `GET /api/v1/users/me` - Get current user information
+- `GET /api/v1/users/` - Get all users (authenticated)
+- `GET /api/v1/users/{user_id}` - Get user by ID (authenticated)
+- `PUT /api/v1/users/{user_id}` - Update user (authenticated, own profile only)
+- `DELETE /api/v1/users/{user_id}` - Delete user (authenticated, own profile only)
 
-- **Endpoint**: `POST /books/`
-- **Description**: Add a new book (requires authentication).
-- **Request Body**:
-  ```json
-  {
-    "title": "The Great Gatsby",
-    "description": "A novel by F. Scott Fitzgerald",
+### Authors
+
+- `GET /api/v1/authors/` - Get all authors
+- `GET /api/v1/authors/{author_id}` - Get author by ID with books
+- `POST /api/v1/authors/` - Create author (authenticated)
+- `PUT /api/v1/authors/{author_id}` - Update author (authenticated)
+- `DELETE /api/v1/authors/{author_id}` - Delete author (authenticated)
+
+### Books
+
+- `GET /api/v1/books/` - Get all books (with optional author filter)
+- `GET /api/v1/books/{book_id}` - Get book by ID with author details
+- `POST /api/v1/books/` - Create book (authenticated)
+- `PUT /api/v1/books/{book_id}` - Update book (authenticated)
+- `DELETE /api/v1/books/{book_id}` - Delete book (authenticated)
+
+## Usage Examples
+
+### Register and Login
+
+```bash
+# Register a new user
+curl -X POST http://localhost:8000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "johndoe", "password": "secretpass123"}'
+
+# Login to get access token
+curl -X POST http://localhost:8000/api/v1/auth/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=johndoe&password=secretpass123"
+```
+
+### Create Author and Book
+
+```bash
+# Create an author (requires authentication)
+curl -X POST http://localhost:8000/api/v1/authors/ \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "J.K. Rowling"}'
+
+# Create a book (requires authentication)
+curl -X POST http://localhost:8000/api/v1/books/ \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Harry Potter and the Philosopher'\''s Stone",
+    "description": "A young wizard'\''s journey begins",
     "author_id": 1
-  }
-  ```
-- **Response**: Book details.
+  }'
+```
 
-### 4. Get All Books
+### Get Data
 
-- **Endpoint**: `GET /books/`
-- **Description**: Retrieve all books with pagination.
-- **Query Parameters**: `skip` (default: 0), `limit` (default: 10).
-- **Response**: List of books.
+```bash
+# Get all books
+curl http://localhost:8000/api/v1/books/
 
-### 5. Create a New Author
+# Get books by specific author
+curl http://localhost:8000/api/v1/books/?author_id=1
 
-- **Endpoint**: `POST /authors/`
-- **Description**: Add a new author (requires authentication).
-- **Request Body**:
-  ```json
-  {
-    "name": "F. Scott Fitzgerald"
-  }
-  ```
-- **Response**: Author details.
+# Get author with all their books
+curl http://localhost:8000/api/v1/authors/1
+```
 
-### 6. Get All Authors
+## Development
 
-- **Endpoint**: `GET /authors/`
-- **Description**: Retrieve all authors with pagination.
-- **Query Parameters**: `skip` (default: 0), `limit` (default: 10).
-- **Response**: List of authors.
+### Running Tests
 
-## Examples
+```bash
+# Run all tests
+make test
 
-### Using cURL
+# Or use pytest directly
+pytest
 
-1. **Register a New User**:
+# Run with coverage
+pytest --cov=app
+```
 
-   ```bash
-   curl -X POST -H "Content-Type: application/json" -d '{"username": "user1", "password": "yourpassword"}' http://127.0.0.1:8000/users/
-   ```
+### Code Quality
 
-2. **Authenticate and Get Token**:
+```bash
+# Format code
+make format
 
-   ```bash
-   curl -X POST -d "username=user1&password=yourpassword" -H "Content-Type: application/x-www-form-urlencoded" http://127.0.0.1:8000/token
-   ```
+# Run linters
+make lint
 
-3. **Create a New Book**:
+# Install pre-commit hooks
+make dev-install
+```
 
-   ```bash
-   curl -X POST -H "Authorization: Bearer <your-token>" -H "Content-Type: application/json" -d '{"title": "The Great Gatsby", "description": "A novel by F. Scott Fitzgerald", "author_id": 1}' http://127.0.0.1:8000/books/
-   ```
+### Database Migrations
 
-4. **Get All Books**:
+```bash
+# Create a new migration
+make migrate-create
 
-   ```bash
-   curl -X GET http://127.0.0.1:8000/books/
-   ```
+# Apply migrations
+make migrate
+
+# Or use alembic directly
+alembic revision --autogenerate -m "Add new field"
+alembic upgrade head
+```
+
+### Makefile Commands
+
+```bash
+make help          # Show all available commands
+make install       # Install production dependencies
+make dev-install   # Install development dependencies
+make test          # Run tests
+make lint          # Run linters
+make format        # Format code
+make clean         # Clean build artifacts
+make run           # Run the application
+make seed          # Seed the database
+make docker-up     # Start docker containers
+make docker-down   # Stop docker containers
+make migrate       # Run database migrations
+```
+
+## Environment Variables
+
+Create a `.env` file based on `.env.example`:
+
+```bash
+# Application
+APP_NAME=Bookstore API
+DEBUG=False
+
+# Security
+SECRET_KEY=your-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# Database
+SQLALCHEMY_DATABASE_URL=sqlite:///./bookstore.db
+
+# CORS
+BACKEND_CORS_ORIGINS=http://localhost:3000,http://localhost:8000
+
+# Logging
+LOG_LEVEL=INFO
+```
+
+## Testing Credentials
+
+When you seed the database, the following test users are created:
+
+- Username: `admin` / Password: `admin123`
+- Username: `user1` / Password: `password123`
+- Username: `user2` / Password: `password123`
+- Username: `user3` / Password: `password123`
 
 ## Contributing
 
-Contributions are welcome! If you have ideas for new features, improvements, or bug fixes, please feel free to open an issue or create a pull request.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Steps to Contribute
-
-1. **Fork the Repository**: Click the 'Fork' button at the top right of this page.
-2. **Clone Your Fork**: Clone your forked repository to your local machine.
-   ```bash
-   git clone https://github.com/your-username/bookstore-api-fastapi.git
-   ```
-3. **Create a Branch**: Create a new branch for your feature or bug fix.
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-4. **Make Changes**: Make your changes and commit them with a descriptive message.
-   ```bash
-   git commit -m "Add: feature description"
-   ```
-5. **Push Changes**: Push your changes to your forked repository.
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-6. **Create a Pull Request**: Go to the original repository on GitHub and create a pull request.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Acknowledgments
+
+- [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework for building APIs
+- [SQLAlchemy](https://www.sqlalchemy.org/) - SQL toolkit and ORM
+- [Pydantic](https://pydantic-docs.helpmanual.io/) - Data validation using Python type hints
+
 ---
 
-Thank you for using the Bookstore API Backend with FastAPI! If you have any questions or feedback, feel free to reach out to [me](mailto:hoangson091104@gmail.com). Happy coding! 📚🚀
+**Happy Coding!** If you have any questions or feedback, please open an issue on GitHub.

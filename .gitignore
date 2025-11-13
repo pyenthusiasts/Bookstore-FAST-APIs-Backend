@@ -130,6 +130,14 @@ ENV/
 env.bak/
 venv.bak/
 
+# Project specific
+*.db
+*.sqlite
+*.sqlite3
+bookstore.db
+test.db
+.ruff_cache/
+
 # Spyder project settings
 .spyderproject
 .spyproject
